@@ -113,3 +113,13 @@ changelog:
 # Generate the changelog for the project
 	$(call title, "Generating changelog")
 	npx auto-changelog -p -o CHANGELOG.md --hide-credit --release-summary --hide-empty-releases --sort-commits date-desc && git add CHANGELOG.md
+
+globalize:
+# Globalize the project
+	$(call title, "Globalizing the project")
+	node $(SCRIPTS_PATH)/globalize.js
+
+env:
+# Move .env-example to .env
+	$(call title, "Moving .env-example to .env")
+	cp .env-example .env
