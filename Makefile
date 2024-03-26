@@ -23,6 +23,12 @@ clean:
 	$(call title, "Cleaning up ephemeral paths: $(EPHEMERAL_PATHS)")
 	rm -rf $(EPHEMERAL_PATHS)
 
+deep-clean: clean
+# Clean up all the generated files
+# Also clean up node_modules and package-lock.json
+	$(call title, "Cleaning up all generated files")
+	$(SCRIPTS_PATH)/deep-clean.sh
+
 build:
 # Build the app, dump into the dist folder
 	$(call title, "Building the app: $(APP_BIN_PATH)")
@@ -80,6 +86,11 @@ lint-fix: format
 pre-commit: lint-fix test
 # Run the pre-commit checks
 	$(call title, "Running pre-commit checks")
+
+rename: clean
+# Rename the project
+	$(call title, "Renaming the project")
+	node $(SCRIPTS_PATH)/rename-project.js
 
 visualize-circular-dependencies: 
 # Visualize the circular dependencies in the project
