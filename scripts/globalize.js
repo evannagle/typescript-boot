@@ -68,6 +68,11 @@ import prompts from 'prompts';
 
             // Update .env with link to command in bin
             const envPath = path.join(process.cwd(), '.env');
+
+            // Make env file if it doesn't exist
+            // By copying the example file
+            execSync(`make env`)
+
             const envData = await fs.readFile(envPath, 'utf8');
 
             // replace or append
