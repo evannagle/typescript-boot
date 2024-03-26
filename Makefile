@@ -1,7 +1,13 @@
 
+# This Makefile is, for the most part, a wrapper around the scripts in the ./scripts folder
+# @link https://makefiletutorial.com/
+
+
 BIN_FOR_APP					= dist/app.js
 BIN_FOR_NODE				= node
+BIN_FOR_MADGE				= madge	
 BIN_FOR_NPM					= npm
+BIN_FOR_NPX					= npx
 PATHS_THAT_ARE_EPHEMERAL	= dist coverage docs/graph.png
 PATH_TO_SCRIPTS				= scripts
 	PATH_FOR_ESBUILD_CONFIG		= $(PATH_TO_SCRIPTS)/esbuild.config.js
@@ -36,56 +42,56 @@ deep-clean: clean
 build:
 # Build the app, dump into the dist folder
 	$(call title, "Building the app: $(BIN_FOR_APP)")
-	node $(PATH_FOR_ESBUILD_CONFIG) production
+	$(BIN_FOR_NODE) $(PATH_FOR_ESBUILD_CONFIG) production
 
 app: clean build
 # Rebuild the app, then run it to get the output
 # A quick way to see the output of the app, and to sanity check the build 
 	$(call title, "Running the app: $(BIN_FOR_APP)")
-	@node $(BIN_FOR_APP) | sed 's/^/> /'
+	@$(BIN_FOR_NODE) $(BIN_FOR_APP) | sed 's/^/> /'
 
 test:
 # Run the jest unit tests
 	$(call title, "Running tests")
-	npm exec jest
+	$(BIN_FOR_NPM) exec jest
 
 test-coverage: clean
 # Run the jest unit tests with coverage enabled
 # Then open the coverage report in the browser
 	$(call title, "Running tests with coverage")
-	npm exec jest tests --coverage
+	$(BIN_FOR_NPM) exec jest tests --coverage
 	open coverage/index.html
 
 docs:
 # Generate the documentation for the project
 	$(call title, "Generating documentation")
-	npx typedoc --plugin typedoc-plugin-markdown --out $(PATH_TO_DOCS) src/index.ts
+	$(BIN_FOR_NPX) typedoc --plugin typedoc-plugin-markdown --out $(PATH_TO_DOCS) src/index.ts
 
 format:
 # Format the code using prettier
 	$(call title, "Formatting code")
-	npx prettier --write src/**/*.ts
+	$(BIN_FOR_NPX) prettier --write src/**/*.ts
 
 install-husky:
 # Install husky if it's not already installed
 	$(call title, "Installing husky if needed")
-	@npm install --save-dev husky
-	npx husky init
+	@$(BIN_FOR_NPM) install --save-dev husky
+	$(BIN_FOR_NPX) husky init
 
 install-madge:
 # Install madge if it's not already installed
 	$(call title, "Installing madge if needed")
-	@npm list -g madge || npm install --location=global madge
+	@$(BIN_FOR_NPM) list -g madge || $(BIN_FOR_NPM) install --location=global madge
 
 lint: format
 # Lint the code using eslint
 	$(call title, "Linting code")
-	npx eslint src/**/*.ts
+	$(BIN_FOR_NPX) eslint src/**/*.ts
 
 lint-fix: format
 # Lint the code using eslint, and fix the issues
 	$(call title, "Linting code and fixing issues")
-	npx eslint src/**/*.ts --fix
+	$(BIN_FOR_NPX) eslint src/**/*.ts --fix
 
 pre-commit: lint-fix test
 # Run the pre-commit checks
@@ -94,34 +100,34 @@ pre-commit: lint-fix test
 rename: clean
 # Rename the project
 	$(call title, "Renaming the project")
-	node $(PATH_TO_SCRIPTS)/rename-project.js
+	$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/rename-project.js
 
 visualize-circular-dependencies: 
 # Visualize the circular dependencies in the project
 	$(call title, "Visualizing circular dependencies")
-	@madge --circular --extensions ts src
+	@$(BIN_FOR_MADGE) --circular --extensions ts src
 
 visualize-dependencies:
 # Visualize the dependencies in the project
 	$(call title, "Visualizing dependencies")
-	@madge --extensions ts src
+	@$(BIN_FOR_MADGE) --extensions ts src
 
 visualize-dependencies-graph:
 # Visualize the dependencies in the project as a graph
 	$(call title, "Visualizing dependencies as a graph")
 	mkdir -p $$(dirname $(PATH_FOR_GRAPH_PNG))
-	@madge --extensions ts src --image $(PATH_FOR_GRAPH_PNG)
+	@$(BIN_FOR_MADGE) --extensions ts src --image $(PATH_FOR_GRAPH_PNG)
 	open $(PATH_FOR_GRAPH_PNG)
 
 changelog:
 # Generate the changelog for the project
 	$(call title, "Generating changelog")
-	npx auto-changelog -p -o CHANGELOG.md --hide-credit --release-summary --hide-empty-releases --sort-commits date-desc && git add CHANGELOG.md
+	$(BIN_FOR_NPX) auto-changelog -p -o CHANGELOG.md --hide-credit --release-summary --hide-empty-releases --sort-commits date-desc && git add CHANGELOG.md
 
 globalize:
 # Globalize the project
 	$(call title, "Globalizing the project")
-	node $(PATH_TO_SCRIPTS)/globalize.js
+	$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/globalize.js
 
 env:
 # Move .env-example to .env
