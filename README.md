@@ -30,6 +30,12 @@ cd my-new-project
 npm install
 ```
 
+3. Rename the app.
+
+```bash
+make rename
+```
+
 3. Run the app
 
 ```bash
@@ -47,6 +53,12 @@ node scripts/esbuild.config.js production
 
 🤖 Running the app: dist/app.js
 > 42
+```
+
+4. Quickly globalize the script by adding it to your path:
+
+```bash
+make globalize
 ```
 
 ## Make Commands
