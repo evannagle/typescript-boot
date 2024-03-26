@@ -2,7 +2,18 @@
 
 Well, I've banged my head around cjs, ejs, fmljs, and other file extensions enough to know that setting a basic template for a project is sometimes the most excruciating, root-canal-like predicament in putting together a project. This is especially the case when I'm just trying to use Typescript to create a little local CLI script for myself.
 
-So, I've create this template mostly for myself, a little love note to my own quest toward automated self-oblivion.
+So, I've create this template mostly for myself, a little love note to my own quest toward automated self-oblivion. The goal here is to be able to build a very malleable typescript application without petting too many roadside yaks.
+
+### Features
+
+- Code formatting with [Prettier](https://prettier.io/)
+- Linting with [ESLint](https://typescript-eslint.io/)
+- Unit testing with [Jest](https://jestjs.io/)
+- Bundling with [ESBuild](https://esbuild.github.io/)
+- Changelog mangement with [auto-changelog](https://github.com/cookpete/auto-changelog)
+- Pre- and post-commit sanity checks with [Husky](https://typicode.github.io/husky/)
+- Dependency visualization with [Madge](https://www.npmjs.com/package/madge)
+- Autogeneration of documentation with [TypeDoc](https://typedoc.org/)
 
 ## Setup
 
@@ -15,6 +26,7 @@ gh repo create my-new-project --template git@github.com:evannagle/typescript-boo
 2. Install the node libidinals
 
 ```bash
+cd my-new-project
 npm install
 ```
 
