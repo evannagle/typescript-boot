@@ -55,8 +55,7 @@ You can read a description of all of the available `make` commands by running, w
 
 ### app
 
-Rebuild the app, then run it to get the output
-A quick way to see the output of the app, and to sanity check the build
+Rebuild the app, then run it to get the output. This a quick way to see the output of the app, and to sanity check the build
 
 ```bash
 $(call title, "Running the app: $(BIN_FOR_APP)")
@@ -65,7 +64,7 @@ $(call title, "Running the app: $(BIN_FOR_APP)")
 
 ### build
 
-Build the app, dump into the dist folder
+Build the app, dump into the dist folder.
 
 ```bash
 $(call title, "Building the app: $(BIN_FOR_APP)")

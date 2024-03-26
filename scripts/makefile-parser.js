@@ -115,7 +115,7 @@ function printAsMarkdown(commands) {
     commands.forEach(command => {
         console.log(`### ${command.name}`);
         console.log();
-        command.description.forEach(line => console.log(`${line}`));
+        console.log(command.description.join(" ").trim());
         console.log()
         console.log("```bash");
         command.commandLines.forEach(line => console.log(`${line}`));
