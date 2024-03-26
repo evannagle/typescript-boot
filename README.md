@@ -55,11 +55,11 @@ You can read a description of all of the available `make` commands by running, w
 
 ### app
 
-Rebuild the app, then run it to get the output. This a quick way to see the output of the app, and to sanity check the build
+Rebuild the app, then run it to get the output. This is a quick way to see the output of the app, and to sanity check the build.
 
 ```bash
 $(call title, "Running the app: $(BIN_FOR_APP)")
-@node $(BIN_FOR_APP) | sed 's/^/> /'
+@$(BIN_FOR_NODE) $(BIN_FOR_APP) | sed 's/^/> /'
 ```
 
 ### build
@@ -68,21 +68,21 @@ Build the app, dump into the dist folder.
 
 ```bash
 $(call title, "Building the app: $(BIN_FOR_APP)")
-node $(PATH_FOR_ESBUILD_CONFIG) production
+$(BIN_FOR_NODE) $(PATH_FOR_ESBUILD_CONFIG) production
 ```
 
 ### changelog
 
-Generate the changelog for the project
+Generate the changelog for the project.
 
 ```bash
 $(call title, "Generating changelog")
-npx auto-changelog -p -o CHANGELOG.md --hide-credit --release-summary --hide-empty-releases --sort-commits date-desc && git add CHANGELOG.md
+$(BIN_FOR_NPX) auto-changelog -p -o CHANGELOG.md --hide-credit --release-summary --hide-empty-releases --sort-commits date-desc && git add CHANGELOG.md
 ```
 
 ### clean
 
-Clean up ephemeral paths
+Clean up ephemeral paths.
 
 ```bash
 $(call title, "Cleaning up ephemeral paths: $(PATHS_THAT_ARE_EPHEMERAL)")
@@ -91,8 +91,7 @@ rm -rf $(PATHS_THAT_ARE_EPHEMERAL)
 
 ### deep-clean
 
-Clean up all the generated files
-Also clean up node_modules and package-lock.json
+Clean up all the generated files. Also clean up node_modules and package-lock.json.
 
 ```bash
 $(call title, "Cleaning up all generated files")
@@ -101,16 +100,16 @@ $(PATH_TO_SCRIPTS)/deep-clean.sh
 
 ### docs
 
-Generate the documentation for the project
+Generate the documentation for the project.
 
 ```bash
 $(call title, "Generating documentation")
-npx typedoc --plugin typedoc-plugin-markdown --out $(PATH_TO_DOCS) src/index.ts
+$(BIN_FOR_NPX) typedoc --plugin typedoc-plugin-markdown --out $(PATH_TO_DOCS) src/index.ts
 ```
 
 ### env
 
-Move .env-example to .env
+Move `.env-example` to `.env`.
 
 ```bash
 $(call title, "Moving .env-example to .env")
@@ -119,26 +118,25 @@ cp .env-example .env
 
 ### format
 
-Format the code using prettier
+Format the code using prettier.
 
 ```bash
 $(call title, "Formatting code")
-npx prettier --write src/**/*.ts
+$(BIN_FOR_NPX) prettier --write src/**/*.ts
 ```
 
 ### globalize
 
-Globalize the project
+Globalize the project.
 
 ```bash
 $(call title, "Globalizing the project")
-node $(PATH_TO_SCRIPTS)/globalize.js
+$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/globalize.js
 ```
 
 ### huh
 
-Get the name of the command
-Print the command, followed by the comments below it, like this one!
+Get the name of the command. Print the command, followed by the comments below it, like this one!
 
 ```bash
 @$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/makefile-parser.js --format=list
@@ -146,44 +144,44 @@ Print the command, followed by the comments below it, like this one!
 
 ### install-husky
 
-Install husky if it's not already installed
+Install husky if it's not already installed.
 
 ```bash
 $(call title, "Installing husky if needed")
-@npm install --save-dev husky
-npx husky init
+@$(BIN_FOR_NPM) install --save-dev husky
+$(BIN_FOR_NPX) husky init
 ```
 
 ### install-madge
 
-Install madge if it's not already installed
+Install madge if it's not already installed.
 
 ```bash
 $(call title, "Installing madge if needed")
-@npm list -g madge || npm install --location=global madge
+@$(BIN_FOR_NPM) list -g madge || $(BIN_FOR_NPM) install --location=global madge
 ```
 
 ### lint
 
-Lint the code using eslint
+Lint the code using eslint.
 
 ```bash
 $(call title, "Linting code")
-npx eslint src/**/*.ts
+$(BIN_FOR_NPX) eslint src/**/*.ts
 ```
 
 ### lint-fix
 
-Lint the code using eslint, and fix the issues
+Lint the code using eslint, and fix the issues.
 
 ```bash
 $(call title, "Linting code and fixing issues")
-npx eslint src/**/*.ts --fix
+$(BIN_FOR_NPX) eslint src/**/*.ts --fix
 ```
 
 ### pre-commit
 
-Run the pre-commit checks
+Run the pre-commit checks.
 
 ```bash
 $(call title, "Running pre-commit checks")
@@ -191,58 +189,57 @@ $(call title, "Running pre-commit checks")
 
 ### rename
 
-Rename the project
+Rename the project.
 
 ```bash
 $(call title, "Renaming the project")
-node $(PATH_TO_SCRIPTS)/rename-project.js
+$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/rename-project.js
 ```
 
 ### test
 
-Run the jest unit tests
+Run the jest unit tests.
 
 ```bash
 $(call title, "Running tests")
-npm exec jest
+$(BIN_FOR_NPM) exec jest
 ```
 
 ### test-coverage
 
-Run the jest unit tests with coverage enabled
-Then open the coverage report in the browser
+Run the jest unit tests with coverage enabled. Then open the coverage report in the browser.
 
 ```bash
 $(call title, "Running tests with coverage")
-npm exec jest tests --coverage
+$(BIN_FOR_NPM) exec jest tests --coverage
 open coverage/index.html
 ```
 
 ### visualize-circular-dependencies
 
-Visualize the circular dependencies in the project
+Visualize the circular dependencies in the project.
 
 ```bash
 $(call title, "Visualizing circular dependencies")
-@madge --circular --extensions ts src
+@$(BIN_FOR_MADGE) --circular --extensions ts src
 ```
 
 ### visualize-dependencies
 
-Visualize the dependencies in the project
+Visualize the dependencies in the project.
 
 ```bash
 $(call title, "Visualizing dependencies")
-@madge --extensions ts src
+@$(BIN_FOR_MADGE) --extensions ts src
 ```
 
 ### visualize-dependencies-graph
 
-Visualize the dependencies in the project as a graph
+Visualize the dependencies in the project as a graph.
 
 ```bash
 $(call title, "Visualizing dependencies as a graph")
 mkdir -p $$(dirname $(PATH_FOR_GRAPH_PNG))
-@madge --extensions ts src --image $(PATH_FOR_GRAPH_PNG)
+@$(BIN_FOR_MADGE) --extensions ts src --image $(PATH_FOR_GRAPH_PNG)
 open $(PATH_FOR_GRAPH_PNG)
 ```
