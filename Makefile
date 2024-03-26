@@ -1,11 +1,15 @@
 
-SCRIPTS_PATH			= scripts
-ESBUILD_CONFIG_PATH		= $(SCRIPTS_PATH)/esbuild.config.js
-APP_BIN_PATH			= dist/app.js
-EPHEMERAL_PATHS			= dist coverage docs/graph.png
-PYTHON_BIN_PATH			= /usr/bin/python3
-DOCS_PATH				= docs
-GRAPH_PNG_PATH		 	= $(DOCS_PATH)/graph.png
+BIN_FOR_APP					= dist/app.js
+BIN_FOR_NODE				= node
+BIN_FOR_NPM					= npm
+PATHS_THAT_ARE_EPHEMERAL	= dist coverage docs/graph.png
+PATH_TO_SCRIPTS				= scripts
+	PATH_FOR_ESBUILD_CONFIG		= $(PATH_TO_SCRIPTS)/esbuild.config.js
+	PATH_FOR_GRAPH_PNG		 	= $(PATH_TO_DOCS)/graph.png
+
+PATH_TO_DOCS				= docs
+
+
 
 define title
 	@echo "\n\033[1;33m🤖$(1)\033[0m"
@@ -16,29 +20,29 @@ endef
 huh:
 # Get the name of the command
 # Print the command, followed by the comments below it, like this one!
-	$(PYTHON_BIN_PATH) scripts/makefile-json.py Makefile
+	@$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/makefile-parser.js --format=list
 
 clean:
 # Clean up ephemeral paths
-	$(call title, "Cleaning up ephemeral paths: $(EPHEMERAL_PATHS)")
-	rm -rf $(EPHEMERAL_PATHS)
+	$(call title, "Cleaning up ephemeral paths: $(PATHS_THAT_ARE_EPHEMERAL)")
+	rm -rf $(PATHS_THAT_ARE_EPHEMERAL)
 
 deep-clean: clean
 # Clean up all the generated files
 # Also clean up node_modules and package-lock.json
 	$(call title, "Cleaning up all generated files")
-	$(SCRIPTS_PATH)/deep-clean.sh
+	$(PATH_TO_SCRIPTS)/deep-clean.sh
 
 build:
 # Build the app, dump into the dist folder
-	$(call title, "Building the app: $(APP_BIN_PATH)")
-	node $(ESBUILD_CONFIG_PATH) production
+	$(call title, "Building the app: $(BIN_FOR_APP)")
+	node $(PATH_FOR_ESBUILD_CONFIG) production
 
 app: clean build
 # Rebuild the app, then run it to get the output
 # A quick way to see the output of the app, and to sanity check the build 
-	$(call title, "Running the app: $(APP_BIN_PATH)")
-	@node $(APP_BIN_PATH) | sed 's/^/> /'
+	$(call title, "Running the app: $(BIN_FOR_APP)")
+	@node $(BIN_FOR_APP) | sed 's/^/> /'
 
 test:
 # Run the jest unit tests
@@ -55,7 +59,7 @@ test-coverage: clean
 docs:
 # Generate the documentation for the project
 	$(call title, "Generating documentation")
-	npx typedoc --plugin typedoc-plugin-markdown --out $(DOCS_PATH) src/index.ts
+	npx typedoc --plugin typedoc-plugin-markdown --out $(PATH_TO_DOCS) src/index.ts
 
 format:
 # Format the code using prettier
@@ -90,7 +94,7 @@ pre-commit: lint-fix test
 rename: clean
 # Rename the project
 	$(call title, "Renaming the project")
-	node $(SCRIPTS_PATH)/rename-project.js
+	node $(PATH_TO_SCRIPTS)/rename-project.js
 
 visualize-circular-dependencies: 
 # Visualize the circular dependencies in the project
@@ -105,9 +109,9 @@ visualize-dependencies:
 visualize-dependencies-graph:
 # Visualize the dependencies in the project as a graph
 	$(call title, "Visualizing dependencies as a graph")
-	mkdir -p $$(dirname $(GRAPH_PNG_PATH))
-	@madge --extensions ts src --image $(GRAPH_PNG_PATH)
-	open $(GRAPH_PNG_PATH)
+	mkdir -p $$(dirname $(PATH_FOR_GRAPH_PNG))
+	@madge --extensions ts src --image $(PATH_FOR_GRAPH_PNG)
+	open $(PATH_FOR_GRAPH_PNG)
 
 changelog:
 # Generate the changelog for the project
@@ -117,7 +121,7 @@ changelog:
 globalize:
 # Globalize the project
 	$(call title, "Globalizing the project")
-	node $(SCRIPTS_PATH)/globalize.js
+	node $(PATH_TO_SCRIPTS)/globalize.js
 
 env:
 # Move .env-example to .env
