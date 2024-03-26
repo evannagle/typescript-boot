@@ -20,13 +20,14 @@ So, I've create this template mostly for myself, a little love note to my own qu
 1. Create a copy of the template
 
 ```bash
-gh repo create my-new-project --template git@github.com:evannagle/typescript-boot.git  --private --clone
+gh repo create happy-bog --template git@github.com:evannagle/typescript-boot.git  --private --clone
 ```
 
 2. Install the node libidinals
 
 ```bash
-cd my-new-project
+cd happy-bog
+
 npm install
 ```
 
@@ -59,6 +60,10 @@ node scripts/esbuild.config.js production
 
 ```bash
 make globalize
+
+happy-bog
+
+42
 ```
 
 ## Make Commands

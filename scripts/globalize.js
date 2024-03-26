@@ -11,9 +11,6 @@ import prompts from 'prompts';
         const packageJson = JSON.parse(packageJsonData);
         const likelyCurrentName = packageJson.name;
 
-        console.log("- Current Name:", likelyCurrentName);
-
-        // ** USER INPUT **
         const { command_name } = await prompts({
             type: 'text',
             name: 'command_name',
