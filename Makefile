@@ -23,6 +23,11 @@ endef
 
 .PHONY: %
 
+assume:
+# Assume the project is set up.
+# First, make sure `npm install` has been run.
+	@$(BIN_FOR_NPM) list --depth=0 > /dev/null  || (echo "You are missing dependencies. Did you run 'npm install' first?" && exit 1)
+
 huh:
 # Get the name of the command.
 # Print the command, followed by the comments below it, like this one!
@@ -97,7 +102,7 @@ pre-commit: lint-fix test
 # Run the pre-commit checks.
 	$(call title, "Running pre-commit checks")
 
-rename: clean
+rename: assume clean
 # Rename the project.
 	$(call title, "Renaming the project")
 	$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/rename-project.js

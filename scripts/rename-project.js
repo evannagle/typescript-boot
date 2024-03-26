@@ -7,8 +7,15 @@ const myPackage = JSON.parse(await fs.readFile(path.resolve(__projectDir, 'packa
 
 const oldName = myPackage.name;
 const ignoreFolders = ['node_modules', '.git', '.next', 'coverage', 'dist'];
+let rewriteFileNameStatus = 'ask';
+let rewriteFileContentsStatus = 'ask';
 
-async function walk(dir, oldName, newName, rewriteFileNameStatus, rewriteFileContentsStatus) {
+async function walk(dir, oldName, newName) {
+    if (oldName === newName) {
+        console.log("Old name and new name are the same. Have you eaten something past expiry? Exiting.");
+        process.exit(1);
+    }
+
     for await (const file of await fs.readdir(dir)) {
         const pathToFile = path.join(dir, file);
 
@@ -16,10 +23,10 @@ async function walk(dir, oldName, newName, rewriteFileNameStatus, rewriteFileCon
         if (isDirectory && ignoreFolders.includes(file)) continue;
 
         if (isDirectory) {
-            await walk(pathToFile, oldName, newName, rewriteFileNameStatus, rewriteFileContentsStatus);
+            await walk(pathToFile, oldName, newName);
         } else {
-            await maybeChangeFileContents(pathToFile, oldName, newName, rewriteFileNameStatus);
-            await maybeRenameFile(pathToFile, oldName, newName, rewriteFileNameStatus);
+            await maybeChangeFileContents(pathToFile, oldName, newName);
+            await maybeRenameFile(pathToFile, oldName, newName);
         }
     }
 }
@@ -39,35 +46,36 @@ async function askToReplace(prompt) {
     return response.value;
 }
 
-async function maybeChangeFileContents(dir, oldName, newName, rewriteFileContentsStatus) {
+async function maybeChangeFileContents(dir, oldName, newName) {
     const data = await fs.readFile(dir, 'utf8');
 
     if (!data.includes(oldName)) return;
 
     if (rewriteFileContentsStatus === 'none') {
-        console.log(`- Skipped replacing ${oldName} with ${newName} in ${dir}`);
+        console.log(`  - Skipped replacing ${oldName} with ${newName} in ${dir}`);
         return;
     } else if (rewriteFileContentsStatus === 'ask') {
         const response = await askToReplace(`Replace ${oldName} with ${newName} in ${dir.replace(__projectDir, '')}?`);
+
         if (response === 'all') {
-            console.log(`- Rewriting all file contents`);
+            console.log(`  - Rewriting all file contents`);
             rewriteFileContentsStatus = 'all';
         } else if (response === 'none') {
-            console.log(`- Skipped replacing ${oldName} with ${newName} in ${dir}`);
+            console.log(`  - Skipped replacing ${oldName} with ${newName} in ${dir}`);
             rewriteFileContentsStatus = 'none';
             return
         } else if (response === 'no') {
-            console.log(`- Skipped replacing ${oldName} with ${newName} in ${dir}`);
+            console.log(`  - Skipped replacing ${oldName} with ${newName} in ${dir}`);
             return;
         }
     }
 
     const result = data.replace(new RegExp(oldName, 'g'), newName);
     await fs.writeFile(dir, result);
-    console.log(` - Replaced ${oldName} with ${newName} in ${dir}`);
+    console.log(`  - Replaced ${oldName} with ${newName} in ${dir}`);
 }
 
-async function maybeRenameFile(dir, oldName, newName, rewriteFileNameStatus) {
+async function maybeRenameFile(dir, oldName, newName) {
 
     // We only want to replace the oldName in the basename of the full file path
     // So, don't change "tabnab" in /Users/tabnab/Documents/foobar.txt
@@ -79,30 +87,30 @@ async function maybeRenameFile(dir, oldName, newName, rewriteFileNameStatus) {
 
     try {
         await fs.access(newDir);
-        console.log(`- ${newDir} already exists`);
+        console.log(`  - ${newDir} already exists`);
         return;
     } catch { /* Destination doesn't exist - proceed */ }
 
     if (rewriteFileNameStatus === 'none') {
-        console.log(`- Skipped renaming ${dir} to ${newDir}`);
+        console.log(`  - Skipped renaming ${dir} to ${newDir}`);
         return;
     } else if (rewriteFileNameStatus === 'ask') {
         const response = await askToReplace(`Rename ${dir.replace(__projectDir, '')} to ${newDir.replace(__projectDir, '')}?`);
         if (response === 'all') {
-            console.log(`- Rewriting all file names`);
+            console.log(`  - Rewriting all file names`);
             rewriteFileNameStatus = 'all';
         } else if (response === 'none') {
-            console.log(`- Skipped renaming ${dir} to ${newDir}`);
+            console.log(`  - Skipped renaming ${dir} to ${newDir}`);
             rewriteFileNameStatus = 'none';
             return
         } else if (response === 'no') {
-            console.log(`- Skipped renaming ${dir} to ${newDir}`);
+            console.log(`  - Skipped renaming ${dir} to ${newDir}`);
             return;
         }
     }
 
     await fs.rename(dir, newDir);
-    console.log(`- Renamed ${dir} to ${newDir}`);
+    console.log(`  - Renamed ${dir} to ${newDir}`);
 }
 
 // ---- Main Script Execution ---- 
