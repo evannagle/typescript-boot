@@ -10,9 +10,11 @@ BIN_FOR_NPM					= npm
 BIN_FOR_NPX					= npx
 PATHS_THAT_ARE_EPHEMERAL	= dist coverage docs/graph.png
 PATH_TO_SCRIPTS				= scripts
-	PATH_FOR_ESBUILD_CONFIG		= $(PATH_TO_SCRIPTS)/esbuild.config.js
+	PATH_FOR_ESBUILD_CONFIG		= $(PATH_TO_SCRIPTS)/esbuild.config.mjs
 	PATH_FOR_GRAPH_PNG		 	= $(PATH_TO_DOCS)/graph.png
 
+PATH_TO_COVERAGE			= coverage/index.html
+PATH_TO_DIST				= dist
 PATH_TO_DOCS				= docs
 
 
@@ -28,7 +30,7 @@ assume:
 # First, make sure `npm install` has been run.
 	@$(BIN_FOR_NPM) list --depth=0 > /dev/null  || (echo "You are missing dependencies. Did you run 'npm install' first?" && exit 1)
 
-huh:
+huh: assume
 # Get the name of the command.
 # Print the command, followed by the comments below it, like this one!
 	@$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/makefile-parser.js --format=list
@@ -65,7 +67,7 @@ test-coverage: clean
 # Then open the coverage report in the browser.
 	$(call title, "Running tests with coverage")
 	$(BIN_FOR_NPM) exec jest tests --coverage
-	open coverage/index.html
+	open $(PATH_TO_COVERAGE)
 
 docs:
 # Generate the documentation for the project.
@@ -76,6 +78,14 @@ format:
 # Format the code using prettier.
 	$(call title, "Formatting code")
 	$(BIN_FOR_NPX) prettier --write src/**/*.ts
+
+install:
+# Install the project dependencies.
+	$(call title, "Installing dependencies")
+	$(BIN_FOR_NPM) install
+	$(BIN_FOR_NPM) install --location=global madge
+	$(BIN_FOR_NPX) husky init
+	echo "make pre-commit" > .husky/pre-commit
 
 install-husky:
 # Install husky if it's not already installed.

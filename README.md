@@ -28,7 +28,7 @@ gh repo create happy-bog --template git@github.com:evannagle/typescript-boot.git
 ```bash
 cd happy-bog
 
-npm install
+make install
 ```
 
 3. Rename the app.
@@ -63,7 +63,7 @@ make globalize
 
 happy-bog
 
-42
+> 42
 ```
 
 ## Make Commands

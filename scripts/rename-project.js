@@ -5,8 +5,8 @@ import prompts from 'prompts';
 const __projectDir = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const myPackage = JSON.parse(await fs.readFile(path.resolve(__projectDir, 'package.json'), 'utf8'));
 
-const oldName = myPackage.name;
-const ignoreFolders = ['node_modules', '.git', '.next', 'coverage', 'dist'];
+const oldName = myPackage.pythonPackageName || myPackage.name;
+const ignoreFolders = ['node_modules', '__pycache__', 'tests/__pycache__/', '.git', '.ruff_cache', '.next', 'coverage', 'dist'];
 let rewriteFileNameStatus = 'ask';
 let rewriteFileContentsStatus = 'ask';
 
@@ -122,6 +122,11 @@ async function maybeRenameFile(dir, oldName, newName) {
         message: `What would you like to rename ${oldName} to?`,
         initial: path.basename(__projectDir),
     });
+
+    if (!newName) {
+        console.log("No new name provided. Exiting.");
+        process.exit(1);
+    }
 
     let rewriteFileNameStatus = 'ask';
     let rewriteFileContentsStatus = 'ask';
