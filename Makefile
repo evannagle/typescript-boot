@@ -33,7 +33,7 @@ assume:
 huh: assume
 # Get the name of the command.
 # Print the command, followed by the comments below it, like this one!
-	@$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/makefile-parser.js --format=list
+	@$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/makefile-parser.mjs --format=list
 
 clean:
 # Clean up ephemeral paths.
@@ -115,7 +115,7 @@ pre-commit: lint-fix test
 rename: assume clean
 # Rename the project.
 	$(call title, "Renaming the project")
-	$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/rename-project.js
+	$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/rename-project.mjs
 
 visualize-circular-dependencies: 
 # Visualize the circular dependencies in the project.
@@ -142,7 +142,7 @@ changelog:
 globalize:
 # Globalize the project.
 	$(call title, "Globalizing the project")
-	$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/globalize.js
+	$(BIN_FOR_NODE) $(PATH_TO_SCRIPTS)/globalize.mjs
 
 env:
 # Move `.env-example` to `.env`.

@@ -1,1 +1,1 @@
-bootboot / [Exports](modules.md)
+typescript-boot / [Exports](modules.md)

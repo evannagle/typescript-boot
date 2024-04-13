@@ -1,3 +1,3 @@
-[bootboot](README.md) / Exports
+[typescript-boot](README.md) / Exports
 
-# bootboot
+# typescript-boot
